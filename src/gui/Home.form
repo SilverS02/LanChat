@@ -150,7 +150,7 @@
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder thickness="3">
+                        <LineBorder roundedCorners="true" thickness="3">
                           <Color PropertyName="color" blue="37" green="bd" red="c" type="rgb"/>
                         </LineBorder>
                       </Border>
@@ -272,7 +272,7 @@
                       <Properties>
                         <Property name="horizontalAlignment" type="int" value="0"/>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/icons/chaticon.png"/>
+                          <Image iconType="3" name="/resources/chaticon.png"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -293,10 +293,10 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jPanel7" pref="677" max="32767" attributes="0"/>
+                              <Component id="jPanel7" pref="712" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jPanel6" alignment="0" pref="689" max="32767" attributes="0"/>
+                          <Component id="jPanel6" alignment="0" pref="724" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -429,7 +429,7 @@
                               <Color blue="41" green="3a" red="37" type="rgb"/>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                              <Image iconType="3" name="/icons/icons8_paper_plane_32px.png"/>
+                              <Image iconType="3" name="/resources/sendicon.png"/>
                             </Property>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                               <Border info="null"/>

@@ -70,7 +70,7 @@ public class Home extends javax.swing.JFrame {
 
         jSeparator1.setBackground(new java.awt.Color(25, 29, 38));
         jSeparator1.setForeground(new java.awt.Color(25, 29, 38));
-        jSeparator1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(12, 189, 55), 3));
+        jSeparator1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(12, 189, 55), 3, true));
 
         jScrollPane1.setBorder(null);
 
@@ -125,7 +125,7 @@ public class Home extends javax.swing.JFrame {
         jPanel4.setOpaque(false);
 
         icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chaticon.png"))); // NOI18N
+        icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/chaticon.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -184,7 +184,7 @@ public class Home extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea1);
 
         jButton1.setBackground(new java.awt.Color(55, 58, 65));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_paper_plane_32px.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/sendicon.png"))); // NOI18N
         jButton1.setBorder(null);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -208,9 +208,9 @@ public class Home extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
