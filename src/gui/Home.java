@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package GUI;
+package gui;
 
 /**
  *
@@ -15,6 +15,12 @@ public class Home extends javax.swing.JFrame {
      * Creates new form Home
      */
     public Home() {
+        if (false) {
+            this.setVisible(true);
+        } else {
+            new Login(this).setVisible(true);
+        }
+
         initComponents();
     }
 
@@ -47,7 +53,7 @@ public class Home extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("LanChat");
+        setTitle("LanChat - Home");
         setMinimumSize(new java.awt.Dimension(922, 560));
 
         jSplitPane1.setBackground(new java.awt.Color(25, 29, 38));
@@ -178,6 +184,7 @@ public class Home extends javax.swing.JFrame {
         jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextArea1.setForeground(new java.awt.Color(148, 152, 161));
         jTextArea1.setRows(5);
+        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jTextArea1.setCaretColor(new java.awt.Color(12, 189, 55));
         jTextArea1.setSelectedTextColor(new java.awt.Color(19, 24, 30));
         jTextArea1.setSelectionColor(new java.awt.Color(12, 189, 55));
@@ -198,8 +205,8 @@ public class Home extends javax.swing.JFrame {
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -280,7 +287,7 @@ public class Home extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Home().setVisible(true);
+                new Home();
             }
         });
     }
