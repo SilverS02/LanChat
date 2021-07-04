@@ -140,7 +140,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Pattern expName = Pattern.compile("[A-ZÑÁÉÍÓÚ][a-zñáéíóú]{2,} [A-ZÑÁÉÍÓÚ][a-zñáéíóú]{2,}$");
+        Pattern expName = Pattern.compile("^([a-zA-ZÀ-ÿ]{3,} *)+$");
         Matcher expNameResult = expName.matcher(nameField.getText());
 
         Pattern expIp = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
