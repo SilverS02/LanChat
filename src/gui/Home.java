@@ -5,7 +5,7 @@
  */
 package gui;
 
-import _class.User;
+import util.User;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
