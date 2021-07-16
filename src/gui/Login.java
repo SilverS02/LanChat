@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author Larry Finol
+ * @author Alejandro Sanchez y Larry Finol
  */
 public class Login extends javax.swing.JFrame {
 
