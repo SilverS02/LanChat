@@ -5,6 +5,10 @@
  */
 package gui;
 
+import _class.User;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+
 /**
  *
  * @author Alejandro
@@ -15,14 +19,24 @@ public class Home extends javax.swing.JFrame {
      * Creates new form Home
      */
     public Home() {
-        if (false) {
-            this.setVisible(true);
-        } else {
-            new Login(this).setVisible(true);
-        }
-
         initComponents();
         setLocationRelativeTo(null);
+
+        start();
+    }
+
+    public void start() {
+        try {
+            ObjectInputStream file = new ObjectInputStream(new FileInputStream("user"));
+            setVisible(true);
+            User user = (User) file.readObject();
+            file.close();
+            
+            System.out.println(user.getName() + " " + user.getIP());
+        } catch (Exception ex) {
+            setVisible(false);
+            new Login(this).setVisible(true);
+        }
     }
 
     /**

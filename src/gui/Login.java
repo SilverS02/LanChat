@@ -5,6 +5,10 @@
  */
 package gui;
 
+import _class.User;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,13 +19,14 @@ import java.util.regex.Pattern;
 public class Login extends javax.swing.JFrame {
 
     private Home home;
-
+    
     /**
      * Creates new form Login
      */
     public Login(Home home) {
         initComponents();
         setLocationRelativeTo(null);
+        
         this.home = home;
     }
 
@@ -143,20 +148,32 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Pattern expName = Pattern.compile("^([a-zA-ZÀ-ÿ]{3,} *)+$");
         Matcher expNameResult = expName.matcher(nameField.getText());
-
+        
         Pattern expIp = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
         Matcher expIpResult = expIp.matcher(ipField.getText());
-
+        
         if (nameField.getText() != "" && nameField.getText().length() <= 30 && expNameResult.find()) {
             if (expIpResult.find()) {
-                this.home.setVisible(true);
+                User user = new User();
+                user.setName(nameField.getText());
+                user.setIP(ipField.getText());
+                
+                try {
+                    ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream("user"));
+                    file.writeObject(user);
+                    file.close();
+                } catch (IOException ex) {
+                    System.err.println("Error: " + ex.getMessage());
+                }
+                
+                this.home.start();
                 dispose();
             } else {
                 errorLabel.setText("Formato de IP invalido (Ejemplo: 192.168.0.1)");
             }
-        } else if (nameField.getText().length() > 30){
+        } else if (nameField.getText().length() > 30) {
             errorLabel.setText("El nombre es muy largo");
-        } else{
+        } else {
             errorLabel.setText("Formato de Nombre invalido (Ejemplo: Gonzalo González)");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
