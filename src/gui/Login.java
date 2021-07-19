@@ -5,9 +5,11 @@
  */
 package gui;
 
+import java.io.FileInputStream;
 import util.User;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,17 +19,24 @@ import java.util.regex.Pattern;
  * @author Alejandro Sanchez y Larry Finol
  */
 public class Login extends javax.swing.JFrame {
-
-    private Home home;
     
     /**
      * Creates new form Login
      */
-    public Login(Home home) {
+    public Login() {
         initComponents();
         setLocationRelativeTo(null);
         
-        this.home = home;
+        try {
+            ObjectInputStream userFile = new ObjectInputStream(new FileInputStream("userFile"));
+            User user = (User)userFile.readObject();
+            userFile.close();
+            
+            nameField.setText(user.getName());
+            ipField.setText(user.getIP());
+        } catch (Exception ex) {
+            System.out.println("No se a creado el archivo de Usuario.");
+        }
     }
 
     /**
@@ -47,6 +56,7 @@ public class Login extends javax.swing.JFrame {
         ipField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         errorLabel = new javax.swing.JLabel();
+        createServerButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LanChat - Login");
@@ -96,6 +106,18 @@ public class Login extends javax.swing.JFrame {
         errorLabel.setForeground(new java.awt.Color(255, 51, 51));
         errorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        createServerButton.setBackground(new java.awt.Color(12, 189, 55));
+        createServerButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        createServerButton.setForeground(new java.awt.Color(19, 24, 30));
+        createServerButton.setText("Crear Servidor");
+        createServerButton.setBorder(null);
+        createServerButton.setPreferredSize(new java.awt.Dimension(64, 35));
+        createServerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createServerButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -108,14 +130,18 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ipField, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(140, 140, 140))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(createServerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addComponent(errorLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(createServerButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -159,14 +185,14 @@ public class Login extends javax.swing.JFrame {
                 user.setIP(ipField.getText());
                 
                 try {
-                    ObjectOutputStream file = new ObjectOutputStream(new FileOutputStream("user"));
-                    file.writeObject(user);
-                    file.close();
+                    ObjectOutputStream userFile = new ObjectOutputStream(new FileOutputStream("userFile"));
+                    userFile.writeObject(user);
+                    userFile.close();
                 } catch (IOException ex) {
                     System.err.println("Error: " + ex.getMessage());
                 }
                 
-                this.home.start();
+                new Home().setVisible(true);
                 dispose();
             } else {
                 errorLabel.setText("Formato de IP invalido (Ejemplo: 192.168.0.1)");
@@ -178,7 +204,44 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void createServerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createServerButtonActionPerformed
+        
+    }//GEN-LAST:event_createServerButtonActionPerformed
+
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Login().setVisible(true);
+            }
+        });
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton createServerButton;
     private javax.swing.JLabel errorLabel;
     private javax.swing.JTextField ipField;
     private javax.swing.JButton jButton1;
