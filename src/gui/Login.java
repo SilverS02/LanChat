@@ -5,6 +5,7 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.io.FileInputStream;
 import util.User;
 import java.io.FileOutputStream;
@@ -19,19 +20,19 @@ import java.util.regex.Pattern;
  * @author Alejandro Sanchez y Larry Finol
  */
 public class Login extends javax.swing.JFrame {
-    
+
     /**
      * Creates new form Login
      */
     public Login() {
         initComponents();
         setLocationRelativeTo(null);
-        
+
         try {
             ObjectInputStream userFile = new ObjectInputStream(new FileInputStream("userFile"));
-            User user = (User)userFile.readObject();
+            User user = (User) userFile.readObject();
             userFile.close();
-            
+
             nameField.setText(user.getName());
             ipField.setText(user.getIP());
         } catch (Exception ex) {
@@ -96,6 +97,14 @@ public class Login extends javax.swing.JFrame {
         jButton1.setText("CONECTARSE");
         jButton1.setBorder(null);
         jButton1.setPreferredSize(new java.awt.Dimension(64, 35));
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jButton1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jButton1MouseExited(evt);
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -112,6 +121,14 @@ public class Login extends javax.swing.JFrame {
         createServerButton.setText("CREAR SERVIDOR");
         createServerButton.setBorder(null);
         createServerButton.setPreferredSize(new java.awt.Dimension(64, 35));
+        createServerButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                createServerButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                createServerButtonMouseExited(evt);
+            }
+        });
         createServerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createServerButtonActionPerformed(evt);
@@ -173,16 +190,16 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Pattern expName = Pattern.compile("^([a-zA-ZÀ-ÿ]{3,} *)+$");
         Matcher expNameResult = expName.matcher(nameField.getText());
-        
+
         Pattern expIp = Pattern.compile("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
         Matcher expIpResult = expIp.matcher(ipField.getText());
-        
+
         if (nameField.getText() != "" && nameField.getText().length() <= 30 && expNameResult.find()) {
             if (expIpResult.find()) {
                 User user = new User();
                 user.setName(nameField.getText());
                 user.setIP(ipField.getText());
-                
+
                 try {
                     ObjectOutputStream userFile = new ObjectOutputStream(new FileOutputStream("userFile"));
                     userFile.writeObject(user);
@@ -190,7 +207,7 @@ public class Login extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     System.err.println("Error: " + ex.getMessage());
                 }
-                
+
                 new Home().setVisible(true);
                 dispose();
             } else {
@@ -206,6 +223,26 @@ public class Login extends javax.swing.JFrame {
     private void createServerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createServerButtonActionPerformed
         new Server(createServerButton).setVisible(true);
     }//GEN-LAST:event_createServerButtonActionPerformed
+
+    private void jButton1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseEntered
+        jButton1.setBackground(new Color(32, 219, 85));
+    }//GEN-LAST:event_jButton1MouseEntered
+
+    private void jButton1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseExited
+        jButton1.setBackground(new Color(12, 189, 55));
+    }//GEN-LAST:event_jButton1MouseExited
+
+    private void createServerButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createServerButtonMouseEntered
+        if (createServerButton.isEnabled()) {
+            createServerButton.setBackground(new Color(32, 219, 85));
+        }
+    }//GEN-LAST:event_createServerButtonMouseEntered
+
+    private void createServerButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createServerButtonMouseExited
+        if (createServerButton.isEnabled()) {
+            createServerButton.setBackground(new Color(12, 189, 55));
+        }
+    }//GEN-LAST:event_createServerButtonMouseExited
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -238,7 +275,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createServerButton;
     private javax.swing.JLabel errorLabel;
