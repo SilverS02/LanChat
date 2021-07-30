@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  *
@@ -44,9 +43,7 @@ public class Receiver extends Thread {
 
                 if (!isClient) {
                     Sender sender = new Sender();
-                    sender.send(message.getContent(), "", message.getBy());
-                } else {
-                    System.out.println(message.getContent());
+                    sender.send(message.getContent(),message.getBy(), "", message.getToName(), message.getToIp());
                 }
 
                 socket.close();
@@ -61,7 +58,7 @@ public class Receiver extends Thread {
         try {
             serverSocket.close();
         } catch (IOException ex) {
-            System.err.println("Error: " + ex.getMessage());
+            System.err.println("Error: " + ex.getMessage());         
         }
     }
 }

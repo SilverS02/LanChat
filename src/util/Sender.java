@@ -15,10 +15,10 @@ import java.net.Socket;
  */
 public class Sender {
 
-    public void send(String content, String by, String address) {
+    public void send(String content, String by, String toIp, String toName, String address) {
         try {
             int puerto;
-            if (by.equals("")) {
+            if (toIp.equals("")) {
                 puerto = 2120;
             } else {
                 puerto = 2021;
@@ -31,6 +31,8 @@ public class Sender {
             Message message = new Message();
             message.setContent(content);
             message.setBy(by);
+            message.setToIp(toIp);
+            message.setToName(toName);
 
             output.writeObject(message);
 

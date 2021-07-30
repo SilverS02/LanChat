@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class Message implements Serializable {
 
-    private String by, content;
+    private String content, by, toIp, toName;
     
     public void setBy(String by) {
         this.by = by;
@@ -21,6 +21,22 @@ public class Message implements Serializable {
 
     public String getBy() {
         return by;
+    }
+    
+    public void setToIp(String toIp) {
+        this.toIp = toIp;
+    }
+
+    public String getToIp() {
+        return toIp;
+    }
+    
+    public void setToName(String toName) {
+        this.toName = toName;
+    }
+
+    public String getToName() {
+        return toName;
     }
 
     public void setContent(String content) {

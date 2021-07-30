@@ -18,7 +18,6 @@ import util.User;
 public class Home extends javax.swing.JFrame {
 
     private String server;
-    private Sender sender;
 
     /**
      * Creates new form Home
@@ -39,9 +38,6 @@ public class Home extends javax.swing.JFrame {
         
         Receiver receiver = new Receiver(true);
         receiver.start();
-        
-        sender = new Sender();
-        sender.send("Hola larry", "192.168.1.102", server);
     }
 
     /**
@@ -285,7 +281,7 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        sender.send("hola", "192.168.0.114", server);
+        
     }//GEN-LAST:event_sendButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
