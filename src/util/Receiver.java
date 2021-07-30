@@ -5,10 +5,11 @@
  */
 package util;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,25 +17,46 @@ import java.net.Socket;
  */
 public class Receiver extends Thread {
 
-    ServerSocket serverSocket;
-    
+    private ServerSocket serverSocket;
+    private Boolean isClient;
+
+    public Receiver(Boolean isClient) {
+        this.isClient = isClient;
+    }
+
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(2120);
-            
+            int puerto;
+            if (isClient) { 
+                puerto = 2120;
+            } else {
+                puerto = 2021;
+            }
+
+            serverSocket = new ServerSocket(puerto);
+
             while (true) {
                 Socket socket = serverSocket.accept();
-                DataInputStream message = new DataInputStream(socket.getInputStream());
+
+                ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                Message message = (Message) input.readObject();
+
+                if (!isClient) {
+                    Sender sender = new Sender();
+                    sender.send(message.getContent(), "", message.getBy());
+                } else {
+                    System.out.println(message.getContent());
+                }
 
                 socket.close();
-                message.close();
+                input.close();
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
         }
     }
-    
+
     public void finish() {
         try {
             serverSocket.close();

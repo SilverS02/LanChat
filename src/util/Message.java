@@ -5,14 +5,16 @@
  */
 package util;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Larry Finol
  */
-public class Message {
+public class Message implements Serializable {
 
     private String by, content;
-
+    
     public void setBy(String by) {
         this.by = by;
     }

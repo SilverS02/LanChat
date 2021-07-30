@@ -32,7 +32,7 @@ public class Server extends javax.swing.JFrame {
         try {
             ipLabel.setText("IP: " + InetAddress.getLocalHost().getHostAddress());
             
-            receiver = new Receiver();
+            receiver = new Receiver(false);
             receiver.start();
         } catch (UnknownHostException ex) {
             System.out.println("Error: " + ex.getMessage());
