@@ -8,6 +8,7 @@ package gui;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.JButton;
+import util.Receiver;
 
 /**
  *
@@ -16,6 +17,7 @@ import javax.swing.JButton;
 public class Server extends javax.swing.JFrame {
 
     JButton createButtonServer;
+    Receiver receiver;
     
     /**
      * Creates new form Server
@@ -29,8 +31,11 @@ public class Server extends javax.swing.JFrame {
         
         try {
             ipLabel.setText("IP: " + InetAddress.getLocalHost().getHostAddress());
+            
+            receiver = new Receiver();
+            receiver.start();
         } catch (UnknownHostException ex) {
-            ipLabel.setText("Error al encontrar la ip local");
+            System.out.println("Error: " + ex.getMessage());
         }
     }
     
@@ -91,6 +96,7 @@ public class Server extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.createButtonServer.setEnabled(true);
+        receiver.finish();
     }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
