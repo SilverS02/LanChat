@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import util.Sender;
 
 /**
  *
@@ -40,6 +41,10 @@ public class Login extends javax.swing.JFrame {
         }
     }
 
+    public void setErrorLabel(String message) {
+        errorLabel.setText(message);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -16,8 +16,8 @@ import util.Receiver;
  */
 public class Server extends javax.swing.JFrame {
 
-    JButton createButtonServer;
-    Receiver receiver;
+    private JButton createButtonServer;
+    private Receiver receiver;
     
     /**
      * Creates new form Server

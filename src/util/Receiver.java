@@ -5,10 +5,12 @@
  */
 package util;
 
+import gui.Home;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 /**
  *
@@ -16,34 +18,76 @@ import java.net.Socket;
  */
 public class Receiver extends Thread {
 
-    private ServerSocket serverSocket;
     private Boolean isClient;
+    private ServerSocket serverSocket;
+    private HashMap<String, String> usersList;
+    private Home home;
 
     public Receiver(Boolean isClient) {
         this.isClient = isClient;
+        usersList = new HashMap<String, String>();
+    }
+
+    public void setHome(Home home) {
+        this.home = home;
     }
 
     @Override
     public void run() {
-        try {
-            int puerto;
-            if (isClient) { 
-                puerto = 2120;
-            } else {
-                puerto = 2021;
-            }
+        int port = isClient == true ? 2120 : 2021;
 
-            serverSocket = new ServerSocket(puerto);
+        try {
+            serverSocket = new ServerSocket(port);
+            Socket socket;
+            Sender sender = new Sender();
 
             while (true) {
-                Socket socket = serverSocket.accept();
-
+                socket = serverSocket.accept();
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+
                 Message message = (Message) input.readObject();
 
-                if (!isClient) {
-                    Sender sender = new Sender();
-                    sender.send(message.getContent(),message.getBy(), "", message.getToName(), message.getToIp());
+                if (isClient) {
+                    if (!message.getNewConnection()) {
+                        home.updateChatArea(message.getContent());
+                        MessageSaves.Serialize(home.getChatArea(), message.getToName(), message.getBy());
+                    } else {
+                        if (!message.setNewName()) {
+                            home.updateUsersList(message.getUsersList());
+                        } else {
+                            home.setName(message.getToName());
+                        }
+                    }
+                } else {
+                    if (!message.getNewConnection()) {
+                        sender.resend(message);
+                    } else {
+                        int count = 0;
+                        Boolean exists;
+                        do {
+                            count++;
+                            exists = false;
+                            for (String name : usersList.values()) {
+                                if (count != 1) {
+                                    if (name.equals(message.getBy() + " " + count)) {
+                                        exists = true;
+                                    }
+                                } else {
+                                    if (name.equals(message.getBy())) {
+                                        exists = true;
+                                    }
+                                }
+                            }
+                        } while (exists);
+                        if (count != 1) {
+                            message.setBy(message.getBy() + " " + count);
+                            sender.sendNewName(socket.getInetAddress().getHostAddress(), message.getBy());
+                        }
+                        usersList.put(socket.getInetAddress().getHostAddress(), message.getBy());
+                        for (String ip : usersList.keySet()) {
+                            sender.sendUsersList(ip, usersList);
+                        }
+                    }
                 }
 
                 socket.close();
@@ -58,7 +102,7 @@ public class Receiver extends Thread {
         try {
             serverSocket.close();
         } catch (IOException ex) {
-            System.err.println("Error: " + ex.getMessage());         
+            System.err.println("Error: " + ex.getMessage());
         }
     }
 }

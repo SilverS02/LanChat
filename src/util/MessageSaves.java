@@ -15,16 +15,16 @@ public class MessageSaves {
     
     public static void Serialize(String content, String by, String to){
         String messagelist = "";
-        try{
+        /*try{
             ObjectInputStream messageFileIn = new ObjectInputStream(new FileInputStream(by+"-"+to));
             messagelist = (String) messageFileIn.readObject();;
             messageFileIn.close();
         } catch (Exception ex){
             System.out.println("Arhivo inexistente");
-        }
+        }*/
         
         try {
-            messagelist += content + "\n";
+            messagelist = content;
             ObjectOutputStream messageFile = new ObjectOutputStream(new FileOutputStream(by+"-"+to));
             messageFile.writeObject(messagelist);
             messageFile.close();
@@ -34,15 +34,15 @@ public class MessageSaves {
     }
     
     public static String Deserialize(String by, String to){
-        String messagelist = "";
+        String messageList = "";
         try{
             ObjectInputStream messageFileIn = new ObjectInputStream(new FileInputStream(by+"-"+to));
-            messagelist = (String) messageFileIn.readObject();
+            messageList = (String) messageFileIn.readObject();
             messageFileIn.close();
-            return messagelist;
+            
+            return messageList;
         } catch (Exception ex){
-            System.out.println("Error");
+            return messageList;
         }
-        return null;
     }
 }

@@ -6,6 +6,7 @@
 package util;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  *
@@ -14,29 +15,17 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     private String content, by, toIp, toName;
-    
-    public void setBy(String by) {
-        this.by = by;
-    }
+    private HashMap<String, String> usersList;
+    private Boolean newConnection, newName;
 
-    public String getBy() {
-        return by;
-    }
-    
-    public void setToIp(String toIp) {
-        this.toIp = toIp;
-    }
-
-    public String getToIp() {
-        return toIp;
-    }
-    
-    public void setToName(String toName) {
-        this.toName = toName;
-    }
-
-    public String getToName() {
-        return toName;
+    public Message() {
+        content = "";
+        by = "";
+        toIp = "";
+        toName = "";
+        usersList = new HashMap<String, String>();
+        newConnection = false;
+        newName = false;
     }
 
     public void setContent(String content) {
@@ -45,5 +34,53 @@ public class Message implements Serializable {
 
     public String getContent() {
         return content;
+    }
+
+    public void setBy(String by) {
+        this.by = by;
+    }
+
+    public String getBy() {
+        return by;
+    }
+
+    public void setToIp(String toIp) {
+        this.toIp = toIp;
+    }
+
+    public String getToIp() {
+        return toIp;
+    }
+
+    public void setToName(String toName) {
+        this.toName = toName;
+    }
+
+    public String getToName() {
+        return toName;
+    }
+
+    public void setUsersList(HashMap<String, String> usersList) {
+        this.usersList = usersList;
+    }
+
+    public HashMap<String, String> getUsersList() {
+        return usersList;
+    }
+
+    public void setNewConnection(Boolean newConnection) {
+        this.newConnection = newConnection;
+    }
+
+    public Boolean getNewConnection() {
+        return newConnection;
+    }
+
+    public void setNewName(Boolean newName) {
+        this.newName = newName;
+    }
+
+    public Boolean setNewName() {
+        return newName;
     }
 }

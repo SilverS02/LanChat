@@ -5,8 +5,13 @@
  */
 package gui;
 
+import java.awt.CardLayout;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import javax.swing.DefaultListModel;
+import util.MessageSaves;
 import util.Receiver;
 import util.Sender;
 import util.User;
@@ -15,9 +20,12 @@ import util.User;
  *
  * @author Larry Finol y Alejandro
  */
-public class Home extends javax.swing.JFrame {
+public class Home extends javax.swing.JFrame implements Serializable {
 
-    private String server;
+    private String name, server, chat;
+    private Sender sender;
+    private Receiver receiver;
+    private HashMap<String, String> usersListMap;
 
     /**
      * Creates new form Home
@@ -31,13 +39,45 @@ public class Home extends javax.swing.JFrame {
             User user = (User) userFile.readObject();
             userFile.close();
 
+            name = user.getName();
             server = user.getIP();
         } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
         }
-        
-        Receiver receiver = new Receiver(true);
+
+        receiver = new Receiver(true);
+        receiver.setHome(this);
         receiver.start();
+
+        sender = new Sender();
+        sender.sendConnection(server, name);
+
+        chat = "";
+
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // ---------- Actualizar Lista de Usuarios Conectados ----------
+    public void updateUsersList(HashMap<String, String> usersList) {
+        usersListMap = usersList;
+        DefaultListModel model = new DefaultListModel();
+        for (String name : usersList.values()) {
+            if (!this.name.equals(name)) {
+                model.addElement(name);
+            }
+        }
+        this.usersList.setModel(model);
+    }
+
+    public void updateChatArea(String message) {
+        chatArea.append(message);
+    }
+
+    public String getChatArea() {
+        return chatArea.getText();
     }
 
     /**
@@ -51,26 +91,33 @@ public class Home extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel3 = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         icon = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
+        chatPanel = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        chatArea = new javax.swing.JTextArea();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        messageArea = new javax.swing.JTextArea();
         sendButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        usersList = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LanChat - Home");
         setMinimumSize(new java.awt.Dimension(922, 560));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jSplitPane1.setBackground(new java.awt.Color(25, 29, 38));
         jSplitPane1.setDividerLocation(230);
@@ -78,8 +125,8 @@ public class Home extends javax.swing.JFrame {
         jSplitPane1.setForeground(new java.awt.Color(25, 29, 38));
         jSplitPane1.setResizeWeight(0.2);
 
-        jPanel3.setBackground(new java.awt.Color(19, 24, 30));
-        jPanel3.setLayout(new java.awt.CardLayout());
+        mainPanel.setBackground(new java.awt.Color(19, 24, 30));
+        mainPanel.setLayout(new java.awt.CardLayout());
 
         jPanel4.setOpaque(false);
 
@@ -97,18 +144,18 @@ public class Home extends javax.swing.JFrame {
             .addComponent(icon, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
         );
 
-        jPanel3.add(jPanel4, "card2");
+        mainPanel.add(jPanel4, "card2");
 
-        jPanel5.setOpaque(false);
+        chatPanel.setOpaque(false);
 
         jPanel6.setBackground(new java.awt.Color(55, 58, 65));
         jPanel6.setForeground(new java.awt.Color(138, 142, 151));
         jPanel6.setPreferredSize(new java.awt.Dimension(706, 50));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Gonzalo González Oliveras");
+        nameLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nameLabel.setForeground(new java.awt.Color(255, 255, 255));
+        nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nameLabel.setText("Gonzalo González Oliveras");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -116,34 +163,45 @@ public class Home extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jScrollPane3.setBorder(null);
+
+        chatArea.setEditable(false);
+        chatArea.setBackground(new java.awt.Color(19, 24, 30));
+        chatArea.setColumns(20);
+        chatArea.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        chatArea.setForeground(new java.awt.Color(255, 255, 255));
+        chatArea.setRows(5);
+        chatArea.setBorder(null);
+        jScrollPane3.setViewportView(chatArea);
 
         jPanel7.setOpaque(false);
         jPanel7.setPreferredSize(new java.awt.Dimension(0, 50));
 
         jScrollPane2.setBorder(null);
 
-        jTextArea1.setBackground(new java.awt.Color(55, 58, 65));
-        jTextArea1.setColumns(1);
-        jTextArea1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(148, 152, 161));
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(1);
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jTextArea1.setCaretColor(new java.awt.Color(12, 189, 55));
-        jTextArea1.setSelectedTextColor(new java.awt.Color(19, 24, 30));
-        jTextArea1.setSelectionColor(new java.awt.Color(12, 189, 55));
-        jScrollPane2.setViewportView(jTextArea1);
+        messageArea.setBackground(new java.awt.Color(55, 58, 65));
+        messageArea.setColumns(1);
+        messageArea.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        messageArea.setForeground(new java.awt.Color(148, 152, 161));
+        messageArea.setLineWrap(true);
+        messageArea.setRows(1);
+        messageArea.setWrapStyleWord(true);
+        messageArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        messageArea.setCaretColor(new java.awt.Color(12, 189, 55));
+        messageArea.setSelectedTextColor(new java.awt.Color(19, 24, 30));
+        messageArea.setSelectionColor(new java.awt.Color(12, 189, 55));
+        jScrollPane2.setViewportView(messageArea);
 
         sendButton.setBackground(new java.awt.Color(55, 58, 65));
         sendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/sendicon.png"))); // NOI18N
@@ -169,28 +227,32 @@ public class Home extends javax.swing.JFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
-                .addContainerGap())
+        javax.swing.GroupLayout chatPanelLayout = new javax.swing.GroupLayout(chatPanel);
+        chatPanel.setLayout(chatPanelLayout);
+        chatPanelLayout.setHorizontalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
+            .addGroup(chatPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
+                .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        chatPanelLayout.setVerticalGroup(
+            chatPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(chatPanelLayout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 460, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jPanel3.add(jPanel5, "card3");
+        mainPanel.add(chatPanel, "chatPanel");
 
-        jSplitPane1.setRightComponent(jPanel3);
+        jSplitPane1.setRightComponent(mainPanel);
 
         jPanel2.setBackground(new java.awt.Color(25, 29, 38));
 
@@ -210,19 +272,25 @@ public class Home extends javax.swing.JFrame {
 
         jScrollPane1.setBorder(null);
 
-        jList1.setBackground(new java.awt.Color(25, 29, 38));
-        jList1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jList1.setForeground(new java.awt.Color(138, 142, 151));
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        usersList.setBackground(new java.awt.Color(25, 29, 38));
+        usersList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        usersList.setForeground(new java.awt.Color(138, 142, 151));
+        usersList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Marco del Uría", "Gastón Blasco Gonzalez", "Gonzalo González Oliveras", "Moisés Reig Pallarès", "Sarita Parra Palacios", "Gilberto de Solana", "Mohamed Manjón Amor", "Juan Bautista Amo-Gimenez", "Toni Pelayo", "Jennifer Font Juan", "Marco del Uría", "Gastón Blasco Gonzalez", "Gonzalo González Oliveras", "Moisés Reig Pallarès", "Sarita Parra Palacios", "Gilberto de Solana", "Mohamed Manjón Amor", "Juan Bautista Amo-Gimenez", "Toni Pelayo", "Jennifer Font Juan", "Marco del Uría", "Gastón Blasco Gonzalez", "Gonzalo González Oliveras", "Moisés Reig Pallarès", "Sarita Parra Palacios", "Gilberto de Solana", "Mohamed Manjón Amor", "Juan Bautista Amo-Gimenez", "Toni Pelayo", "Jennifer Font Juan" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setFixedCellHeight(28);
-        jList1.setSelectionBackground(new java.awt.Color(169, 230, 252));
-        jList1.setSelectionForeground(new java.awt.Color(19, 24, 30));
-        jScrollPane1.setViewportView(jList1);
+        usersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        usersList.setToolTipText("");
+        usersList.setFixedCellHeight(28);
+        usersList.setSelectionBackground(new java.awt.Color(169, 230, 252));
+        usersList.setSelectionForeground(new java.awt.Color(19, 24, 30));
+        usersList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                usersListMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(usersList);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -281,27 +349,58 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        
+        String content = name + ":\n" + messageArea.getText() + "\n\n";
+        String toIp = "";
+        for (String ip : usersListMap.keySet()) {
+            if (usersListMap.get(ip).equals(usersList.getSelectedValue())) {
+                toIp = ip;
+            }
+        }
+        String toName = usersList.getSelectedValue();
+        messageArea.setText("");
+
+        sender.sendMessage(content, name, toIp, toName, server);
+        updateChatArea(content);
+        MessageSaves.Serialize(chatArea.getText(), name, toName);
     }//GEN-LAST:event_sendButtonActionPerformed
 
+    private void usersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersListMouseClicked
+        if (!usersList.getSelectedValue().equals(chat)) {
+            chat = usersList.getSelectedValue();
+            
+            CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+            cardLayout.show(mainPanel, "chatPanel");
+
+            updateChatArea(MessageSaves.Deserialize(name, usersList.getSelectedValue()));
+            nameLabel.setText(usersList.getSelectedValue());
+            messageArea.setText("");
+        }
+    }//GEN-LAST:event_usersListMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        receiver.finish();
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea chatArea;
+    private javax.swing.JPanel chatPanel;
     private javax.swing.JLabel icon;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JTextArea messageArea;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JButton sendButton;
+    private javax.swing.JList<String> usersList;
     // End of variables declaration//GEN-END:variables
 }
