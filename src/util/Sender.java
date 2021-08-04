@@ -76,14 +76,14 @@ public class Sender {
         try {
             Socket socket = new Socket(client, 2120);
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-            
+
             Message message = new Message();
             message.setNewConnection(true);
-            message.setNewName(true);
+            message.setNewUserName(true);
             message.setToName(newName);
-            
+
             output.writeObject(message);
-            
+
             socket.close();
             output.close();
         } catch (IOException ex) {
@@ -100,6 +100,23 @@ public class Sender {
             Message message = new Message();
             message.setUsersList(usersList);
             message.setNewConnection(true);
+
+            output.writeObject(message);
+
+            socket.close();
+            output.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex.getMessage());
+        }
+    }
+
+    // ---------- Enviar Desconexión al Servidor ----------
+    public void sendDisconnection(String servidor) {
+        try {
+            Socket socket = new Socket(servidor, 2021);
+            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+
+            Message message = new Message();
 
             output.writeObject(message);
 

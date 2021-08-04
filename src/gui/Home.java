@@ -12,7 +12,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import util.MessageSaves;
-import util.Receiver;
+import util.ReceiverClient;
+import util.ReceiverServer;
 import util.Sender;
 import util.User;
 
@@ -22,9 +23,9 @@ import util.User;
  */
 public class Home extends javax.swing.JFrame implements Serializable {
 
-    private String name, server, chat;
+    private String userName, server, chat;
     private Sender sender;
-    private Receiver receiver;
+    private ReceiverClient receiver;
     private HashMap<String, String> usersListMap;
 
     /**
@@ -39,25 +40,30 @@ public class Home extends javax.swing.JFrame implements Serializable {
             User user = (User) userFile.readObject();
             userFile.close();
 
-            name = user.getName();
+            userName = user.getName();
             server = user.getIP();
         } catch (Exception ex) {
             System.err.println("Error: " + ex.getMessage());
         }
 
-        receiver = new Receiver(true);
-        receiver.setHome(this);
+        receiver = new ReceiverClient(this);
         receiver.start();
 
         sender = new Sender();
-        sender.sendConnection(server, name);
+        sender.sendConnection(server, userName);
 
         chat = "";
-
     }
 
-    public void setName(String name) {
-        this.name = name;
+    // ---------- Setter y Getter de userName ----------
+    // ---------- Establece un valor a userName ----------
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    // ---------- Desvuelve el valor de userName ----------s
+    public String getUserName() {
+        return userName;
     }
 
     // ---------- Actualizar Lista de Usuarios Conectados ----------
@@ -65,7 +71,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
         usersListMap = usersList;
         DefaultListModel model = new DefaultListModel();
         for (String name : usersList.values()) {
-            if (!this.name.equals(name)) {
+            if (!this.userName.equals(name)) {
                 model.addElement(name);
             }
         }
@@ -349,7 +355,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        String content = name + ":\n" + messageArea.getText() + "\n\n";
+        String content = userName + ":\n" + messageArea.getText() + "\n\n";
         String toIp = "";
         for (String ip : usersListMap.keySet()) {
             if (usersListMap.get(ip).equals(usersList.getSelectedValue())) {
@@ -359,25 +365,26 @@ public class Home extends javax.swing.JFrame implements Serializable {
         String toName = usersList.getSelectedValue();
         messageArea.setText("");
 
-        sender.sendMessage(content, name, toIp, toName, server);
+        sender.sendMessage(content, userName, toIp, toName, server);
         updateChatArea(content);
-        MessageSaves.Serialize(chatArea.getText(), name, toName);
+        MessageSaves.Serialize(chatArea.getText(), userName, toName);
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void usersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersListMouseClicked
-        if (!usersList.getSelectedValue().equals(chat)) {
+        if (usersList.getSelectedValue() != null && !usersList.getSelectedValue().equals(chat)) {
             chat = usersList.getSelectedValue();
-            
+
             CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
             cardLayout.show(mainPanel, "chatPanel");
 
-            updateChatArea(MessageSaves.Deserialize(name, usersList.getSelectedValue()));
+            updateChatArea(MessageSaves.Deserialize(userName, usersList.getSelectedValue()));
             nameLabel.setText(usersList.getSelectedValue());
             messageArea.setText("");
         }
     }//GEN-LAST:event_usersListMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        sender.sendDisconnection(server);
         receiver.finish();
     }//GEN-LAST:event_formWindowClosing
 

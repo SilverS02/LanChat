@@ -14,18 +14,52 @@ import java.util.HashMap;
  */
 public class Message implements Serializable {
 
+    private Boolean newMessage, newConnection, newUserName;
     private String content, by, toIp, toName;
     private HashMap<String, String> usersList;
-    private Boolean newConnection, newName;
 
     public Message() {
+        newMessage = false;
+        newConnection = false;
+        newUserName = false;
         content = "";
         by = "";
         toIp = "";
         toName = "";
         usersList = new HashMap<String, String>();
-        newConnection = false;
-        newName = false;
+    }
+
+    // ---------- Setter y Getter de newMessage ----------
+    // ---------- Establece un valor a newMessage ----------
+    public void setNewMessage(Boolean newMesage) {
+        this.newMessage = newMessage;
+    }
+
+    // ---------- Desvuelve el valor de newMessage ----------
+    public Boolean getNewMessage() {
+        return newMessage;
+    }
+
+    // ---------- Setter y Getter de newConnection ----------
+    // ---------- Establece un valor a newConnection ----------
+    public void setNewConnection(Boolean newConnection) {
+        this.newConnection = newConnection;
+    }
+
+    // ---------- Desvuelve el valor de newConnection ----------
+    public Boolean getNewConnection() {
+        return newConnection;
+    }
+
+    // ---------- Setter y Getter de newUserName ----------
+    // ---------- Establece un valor a newUserName ----------
+    public void setNewUserName(Boolean newUserName) {
+        this.newUserName = newUserName;
+    }
+
+    // ---------- Desvuelve el valor de newUserName ----------
+    public Boolean getNewUserName() {
+        return newUserName;
     }
 
     public void setContent(String content) {
@@ -66,21 +100,5 @@ public class Message implements Serializable {
 
     public HashMap<String, String> getUsersList() {
         return usersList;
-    }
-
-    public void setNewConnection(Boolean newConnection) {
-        this.newConnection = newConnection;
-    }
-
-    public Boolean getNewConnection() {
-        return newConnection;
-    }
-
-    public void setNewName(Boolean newName) {
-        this.newName = newName;
-    }
-
-    public Boolean setNewName() {
-        return newName;
     }
 }

@@ -8,7 +8,7 @@ package gui;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.JButton;
-import util.Receiver;
+import util.ReceiverServer;
 
 /**
  *
@@ -17,7 +17,7 @@ import util.Receiver;
 public class Server extends javax.swing.JFrame {
 
     private JButton createButtonServer;
-    private Receiver receiver;
+    private ReceiverServer receiver;
     
     /**
      * Creates new form Server
@@ -32,7 +32,7 @@ public class Server extends javax.swing.JFrame {
         try {
             ipLabel.setText("IP: " + InetAddress.getLocalHost().getHostAddress());
             
-            receiver = new Receiver(false);
+            receiver = new ReceiverServer();
             receiver.start();
         } catch (UnknownHostException ex) {
             System.out.println("Error: " + ex.getMessage());
