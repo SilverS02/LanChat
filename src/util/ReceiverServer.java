@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class ReceiverServer extends Thread {
 
     private ServerSocket serverSocket;
+    private Sender sender;
     private HashMap<String, String> usersList;
 
     // Este es el Receptor que va a Correr en los Clientes (Usuarios).
@@ -25,7 +26,7 @@ public class ReceiverServer extends Thread {
     public void run() {
         try {
             serverSocket = new ServerSocket(2021);
-            Sender sender = new Sender();
+            sender = new Sender();
             usersList = new HashMap<String, String>();
 
             // Ponemos a la constante escucha al Emisor.
@@ -89,6 +90,12 @@ public class ReceiverServer extends Thread {
         } while (exists);
 
         return count;
+    }
+
+    public void close() {
+        for (String ip : usersList.keySet()) {
+            sender.sendCloseServer(ip);
+        }
     }
 
     public void finish() {

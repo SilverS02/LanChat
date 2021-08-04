@@ -6,9 +6,12 @@
 package util;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,6 +26,7 @@ public class Sender {
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
 
             Message message = new Message();
+            message.setNewMessage(true);
             message.setContent(content);
             message.setBy(by);
             message.setToIp(toIp);
@@ -98,8 +102,8 @@ public class Sender {
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
 
             Message message = new Message();
-            message.setUsersList(usersList);
             message.setNewConnection(true);
+            message.setUsersList(usersList);
 
             output.writeObject(message);
 
@@ -125,5 +129,24 @@ public class Sender {
         } catch (IOException ex) {
             System.err.println("Error: " + ex.getMessage());
         }
+    }
+
+    // ---------- Enviar Desconexion a los Clientes ----------
+    public void sendCloseServer(String client) {
+        Socket socket;
+        try {
+            socket = new Socket(client, 2120);
+            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+
+            Message message = new Message();
+
+            output.writeObject(message);
+
+            socket.close();
+            output.close();
+        } catch (IOException ex) {
+            System.err.println("Error: " + ex.getMessage());
+        }
+
     }
 }

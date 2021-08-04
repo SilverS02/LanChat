@@ -31,7 +31,7 @@ public class Message implements Serializable {
 
     // ---------- Setter y Getter de newMessage ----------
     // ---------- Establece un valor a newMessage ----------
-    public void setNewMessage(Boolean newMesage) {
+    public void setNewMessage(Boolean newMessage) {
         this.newMessage = newMessage;
     }
 

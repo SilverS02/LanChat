@@ -13,7 +13,6 @@ import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import util.MessageSaves;
 import util.ReceiverClient;
-import util.ReceiverServer;
 import util.Sender;
 import util.User;
 
@@ -76,14 +75,27 @@ public class Home extends javax.swing.JFrame implements Serializable {
             }
         }
         this.usersList.setModel(model);
+
+        if (this.usersList.getSelectedValue() == null || this.usersList.getSelectedValue() == "") {
+            CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+            cardLayout.show(mainPanel, "selectedChat");
+        }
     }
 
-    public void updateChatArea(String message) {
-        chatArea.append(message);
+    public void setChatArea(String message) {
+        chatArea.setText(message);
     }
 
     public String getChatArea() {
         return chatArea.getText();
+    }
+
+    public void close() {
+        Login login = new Login();
+        login.setErrorLabel("Server Cerrado");
+        login.setVisible(true);
+        receiver.finish();
+        dispose();
     }
 
     /**
@@ -98,7 +110,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
         jPanel1 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         mainPanel = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        selectedChat = new javax.swing.JPanel();
         icon = new javax.swing.JLabel();
         chatPanel = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -116,7 +128,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
         jScrollPane1 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("LanChat - Home");
         setMinimumSize(new java.awt.Dimension(922, 560));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -134,23 +146,23 @@ public class Home extends javax.swing.JFrame implements Serializable {
         mainPanel.setBackground(new java.awt.Color(19, 24, 30));
         mainPanel.setLayout(new java.awt.CardLayout());
 
-        jPanel4.setOpaque(false);
+        selectedChat.setOpaque(false);
 
         icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/chaticon.png"))); // NOI18N
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout selectedChatLayout = new javax.swing.GroupLayout(selectedChat);
+        selectedChat.setLayout(selectedChatLayout);
+        selectedChatLayout.setHorizontalGroup(
+            selectedChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(icon, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        selectedChatLayout.setVerticalGroup(
+            selectedChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(icon, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
         );
 
-        mainPanel.add(jPanel4, "card2");
+        mainPanel.add(selectedChat, "selectedChat");
 
         chatPanel.setOpaque(false);
 
@@ -366,8 +378,8 @@ public class Home extends javax.swing.JFrame implements Serializable {
         messageArea.setText("");
 
         sender.sendMessage(content, userName, toIp, toName, server);
-        updateChatArea(content);
-        MessageSaves.Serialize(chatArea.getText(), userName, toName);
+        MessageSaves.Serialize(getChatArea() + content, userName, toName);
+        setChatArea(MessageSaves.Deserialize(userName, toName));
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void usersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersListMouseClicked
@@ -377,7 +389,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
             CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
             cardLayout.show(mainPanel, "chatPanel");
 
-            updateChatArea(MessageSaves.Deserialize(userName, usersList.getSelectedValue()));
+            setChatArea(MessageSaves.Deserialize(userName, usersList.getSelectedValue()));
             nameLabel.setText(usersList.getSelectedValue());
             messageArea.setText("");
         }
@@ -396,7 +408,6 @@ public class Home extends javax.swing.JFrame implements Serializable {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
@@ -407,6 +418,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
     private javax.swing.JPanel mainPanel;
     private javax.swing.JTextArea messageArea;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JPanel selectedChat;
     private javax.swing.JButton sendButton;
     private javax.swing.JList<String> usersList;
     // End of variables declaration//GEN-END:variables

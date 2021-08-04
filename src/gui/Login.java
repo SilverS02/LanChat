@@ -12,9 +12,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import util.Sender;
+import util.Message;
 
 /**
  *
@@ -44,7 +45,7 @@ public class Login extends javax.swing.JFrame {
     public void setErrorLabel(String message) {
         errorLabel.setText(message);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -213,8 +214,22 @@ public class Login extends javax.swing.JFrame {
                     System.err.println("Error: " + ex.getMessage());
                 }
 
-                new Home().setVisible(true);
-                dispose();
+                try {
+                    Socket socket = new Socket(user.getIP(), 2021);
+                    ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                    
+                    Message message = new Message();
+                    
+                    output.writeObject(message);
+                    
+                    socket.close();
+                    output.close();
+                    
+                    new Home().setVisible(true);
+                    dispose();
+                } catch (IOException ex) {
+                    errorLabel.setText("No se encontro el Servidor");
+                }
             } else {
                 errorLabel.setText("Formato de IP invalido (Ejemplo: 192.168.0.1)");
             }

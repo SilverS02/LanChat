@@ -96,6 +96,7 @@ public class Server extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.createButtonServer.setEnabled(true);
+        receiver.close();
         receiver.finish();
     }//GEN-LAST:event_formWindowClosing
 

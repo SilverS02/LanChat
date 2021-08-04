@@ -37,10 +37,11 @@ public class ReceiverClient extends Thread {
 
                 Message message = (Message) input.readObject();
 
-                // Comprobamos si lo recibido es un nuevo mesanje o una nueva conexion.
+                // Comprobamos si lo recibido es un nuevo mesanje, una nueva conexion o el cierre del servidor.
                 if (message.getNewMessage()) {
-                    home.updateChatArea(message.getContent());
-                    MessageSaves.Serialize(home.getChatArea(), message.getToName(), message.getBy());
+                    String chat = MessageSaves.Deserialize(message.getToName(), message.getBy());
+                    MessageSaves.Serialize(chat + message.getContent(), message.getToName(), message.getBy());
+                    home.setChatArea(chat + message.getContent());
                 } else if (message.getNewConnection()) {
                     // Comprobamos si la nueva conexion desea cambiarle el nombre al usuario o actualizar la listas de ellos.
                     if (message.getNewUserName()) {
@@ -48,6 +49,8 @@ public class ReceiverClient extends Thread {
                     } else {
                         home.updateUsersList(message.getUsersList());
                     }
+                } else {
+                    home.close();
                 }
 
                 socket.close();
