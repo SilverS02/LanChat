@@ -383,7 +383,8 @@ public class Home extends javax.swing.JFrame implements Serializable {
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void usersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersListMouseClicked
-        if (usersList.getSelectedValue() != null && !usersList.getSelectedValue().equals(chat)) {
+        if (usersList.getSelectedValue() != null){
+            System.out.println(usersList.getSelectedValue());
             chat = usersList.getSelectedValue();
 
             CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
@@ -393,6 +394,7 @@ public class Home extends javax.swing.JFrame implements Serializable {
             nameLabel.setText(usersList.getSelectedValue());
             messageArea.setText("");
         }
+      
     }//GEN-LAST:event_usersListMouseClicked
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
